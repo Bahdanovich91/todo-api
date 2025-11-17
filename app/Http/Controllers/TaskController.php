@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaskRequest;
+use App\Models\Task;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class TaskController extends Controller
@@ -19,7 +20,7 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(TaskRequest $request): JsonResponse
     {
         return response()->json(['success' => true,], Response::HTTP_OK);
     }
@@ -35,7 +36,7 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id): JsonResponse
+    public function update(TaskRequest $request, Task $task): JsonResponse
     {
         return response()->json(['success' => true,], Response::HTTP_OK);
     }
