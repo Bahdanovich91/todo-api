@@ -13,8 +13,8 @@ fi
 echo "🐳 Запуск Docker контейнеров..."
 docker compose up -d
 
-# Ожидание запуска PostgreSQL
-echo "⏳ Ожидание запуска PostgreSQL..."
+# Ожидание запуска MySQL
+echo "⏳ Ожидание запуска MySQL..."
 sleep 10
 
 # Установка зависимостей
@@ -29,9 +29,9 @@ fi
 
 # Настройка базы данных в .env
 echo "🔧 Настройка базы данных..."
-docker compose exec app sed -i 's/^DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
-docker compose exec app sed -i 's/^DB_HOST=.*/DB_HOST=postgres/' .env
-docker compose exec app sed -i 's/^DB_PORT=.*/DB_PORT=5432/' .env
+docker compose exec app sed -i 's/^DB_CONNECTION=.*/DB_CONNECTION=mysql/' .env
+docker compose exec app sed -i 's/^DB_HOST=.*/DB_HOST=mysql/' .env
+docker compose exec app sed -i 's/^DB_PORT=.*/DB_PORT=3306/' .env
 docker compose exec app sed -i 's/^DB_DATABASE=.*/DB_DATABASE=todo_api/' .env
 docker compose exec app sed -i 's/^DB_USERNAME=.*/DB_USERNAME=todo_user/' .env
 docker compose exec app sed -i 's/^DB_PASSWORD=.*/DB_PASSWORD=todo_password/' .env
