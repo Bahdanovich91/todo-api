@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
+use App\Dto\TaskDto;
 use App\Enums\TaskStatus;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class TaskRequest extends FormRequest
 {
@@ -33,12 +37,20 @@ class TaskRequest extends FormRequest
         ];
     }
 
-    protected function failedValidation(Validator $validator)
+    public function toDto(): TaskDto
     {
-        $response = response()->json([
+        return TaskDto::fromArray($this->validated());
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function failedValidation(Validator $validator): void
+    {
+        $response = new JsonResponse([
             'success' => false,
             'errors' => $validator->errors(),
-        ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        ], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
 
         throw new ValidationException($validator, $response);
     }

@@ -1,51 +1,66 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskRequest;
-use App\Models\Task;
+use App\Http\Resources\TaskResource;
+use App\Services\TaskService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
-class TaskController extends Controller
+final class TaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct(
+        private readonly TaskService $taskService,
+    ) {
+    }
+
     public function index(): JsonResponse
     {
-        return response()->json(['success' => true,], Response::HTTP_OK);
+        $tasks = TaskResource::collection($this->taskService->list());
+
+        return response()->json([
+            'success' => true,
+            'data' => $tasks->resolve(),
+        ], ResponseAlias::HTTP_OK);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(TaskRequest $request): JsonResponse
     {
-        return response()->json(['success' => true,], Response::HTTP_OK);
+        $task = new TaskResource($this->taskService->create($request->toDto()));
+
+        return response()->json([
+            'success' => true,
+            'data' => $task->resolve(),
+        ], ResponseAlias::HTTP_CREATED);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id): JsonResponse
+    public function show(int $id): JsonResponse
     {
-        return response()->json(['success' => true,], Response::HTTP_OK);
+        $task = new TaskResource($this->taskService->show($id));
+
+        return response()->json([
+            'success' => true,
+            'data' => $task->resolve(),
+        ], ResponseAlias::HTTP_OK);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(TaskRequest $request, Task $task): JsonResponse
+    public function update(TaskRequest $request, int $id): JsonResponse
     {
-        return response()->json(['success' => true,], Response::HTTP_OK);
+        $task = new TaskResource($this->taskService->update($id, $request->toDto()));
+
+        return response()->json([
+            'success' => true,
+            'data' => $task->resolve(),
+        ], ResponseAlias::HTTP_OK);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
-        return response()->json(['success' => true,], Response::HTTP_OK);
+        $this->taskService->delete($id);
+
+        return response()->json(null, ResponseAlias::HTTP_NO_CONTENT);
     }
 }
