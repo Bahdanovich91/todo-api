@@ -12,7 +12,7 @@ interface RepositoryInterface
 {
     public function all(): Collection;
 
-    public function findOrFail(int $id): Task;
+    public function find(int $id): ?Task;
 
     public function create(TaskDto $dto): Task;
 
