@@ -54,10 +54,13 @@ final class TaskController extends Controller
     {
         $tasks = TaskResource::collection($this->taskService->list());
 
-        return response()->json([
-            'success' => true,
-            'data' => $tasks->resolve(),
-        ], ResponseAlias::HTTP_OK);
+        return response()->json(
+            [
+                'success' => true,
+                'data' => $tasks->resolve(),
+            ],
+            ResponseAlias::HTTP_OK
+        );
     }
 
     #[OA\Post(
@@ -102,12 +105,25 @@ final class TaskController extends Controller
     )]
     public function store(TaskRequest $request): JsonResponse
     {
-        $task = new TaskResource($this->taskService->create($request->toDto()));
+        try {
+            $task = new TaskResource($this->taskService->create($request->toDto()));
+        } catch (\Exception $e) {
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ],
+                $e->getCode()
+            );
+        }
 
-        return response()->json([
-            'success' => true,
-            'data' => $task->resolve(),
-        ], ResponseAlias::HTTP_CREATED);
+        return response()->json(
+            [
+                'success' => true,
+                'data' => $task->resolve(),
+            ],
+            ResponseAlias::HTTP_CREATED
+        );
     }
 
     #[OA\Get(
@@ -142,12 +158,25 @@ final class TaskController extends Controller
     )]
     public function show(int $id): JsonResponse
     {
-        $task = new TaskResource($this->taskService->show($id));
+        try {
+            $task = new TaskResource($this->taskService->show($id));
+        } catch (\Exception $e) {
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ],
+                $e->getCode()
+            );
+        }
 
-        return response()->json([
-            'success' => true,
-            'data' => $task->resolve(),
-        ], ResponseAlias::HTTP_OK);
+        return response()->json(
+            [
+                'success' => true,
+                'data' => $task->resolve(),
+            ],
+            ResponseAlias::HTTP_OK
+        );
     }
 
     #[OA\Put(
@@ -190,12 +219,25 @@ final class TaskController extends Controller
     )]
     public function update(TaskRequest $request, int $id): JsonResponse
     {
-        $task = new TaskResource($this->taskService->update($id, $request->toDto()));
+        try {
+            $task = new TaskResource($this->taskService->update($id, $request->toDto()));
+        } catch (\Exception $e) {
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ],
+                $e->getCode()
+            );
+        }
 
-        return response()->json([
-            'success' => true,
-            'data' => $task->resolve(),
-        ], ResponseAlias::HTTP_OK);
+        return response()->json(
+            [
+                'success' => true,
+                'data' => $task->resolve(),
+            ],
+            ResponseAlias::HTTP_OK
+        );
     }
 
     #[OA\Delete(
@@ -223,7 +265,17 @@ final class TaskController extends Controller
     )]
     public function destroy(int $id): JsonResponse
     {
-        $this->taskService->delete($id);
+        try {
+            $this->taskService->delete($id);
+        } catch (\Exception $e) {
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ],
+                $e->getCode()
+            );
+        }
 
         return response()->json(null, ResponseAlias::HTTP_NO_CONTENT);
     }
