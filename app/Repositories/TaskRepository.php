@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Dto\TaskDto;
-use App\Exceptions\TaskNotFoundException;
 use App\Models\Task;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
@@ -27,13 +26,10 @@ final readonly class TaskRepository implements RepositoryInterface
         return $tasks->collect();
     }
 
-    public function findOrFail(int $id): Task
+    public function find(int $id): ?Task
     {
         /** @var ?Task $task */
-        $task = Task::where('id', $id)->first();
-        if (!$task) {
-            throw new TaskNotFoundException($id);
-        }
+        $task = $this->query()->find($id);
 
         return $task;
     }
