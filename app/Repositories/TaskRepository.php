@@ -29,7 +29,7 @@ final readonly class TaskRepository implements RepositoryInterface
 
     public function findOrFail(int $id): Task
     {
-        /** @var Task $task */
+        /** @var ?Task $task */
         $task = Task::where('id', $id)->first();
         if (!$task) {
             throw new TaskNotFoundException($id);
