@@ -39,3 +39,13 @@ vendor/bin/php-cs-fixer fix --dry-run --diff
 # phpstan
 vendor/bin/phpstan analyse --configuration=phpstan.neon
 ```
+
+## Swagger документация
+
+```bash
+# Генерация Swagger документации
+docker compose exec app php artisan l5-swagger:generate
+
+# Доступ к документаци
+# http://localhost:8088/api/documentation
+```

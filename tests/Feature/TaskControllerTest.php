@@ -67,10 +67,15 @@ final class TaskControllerTest extends TestCase
             ->assertJsonPath('data.title', $task->title);
     }
 
-    public function test_show_returns_not_found_for_missing_task(): void
+    public function test_show_get_error_if_task_not_exists(): void
     {
-        $this->getJson(route('tasks.show', 999))
-            ->assertNotFound();
+        $response = $this->getJson(route('tasks.show', 1));
+
+        $response->assertStatus(404)
+            ->assertJson([
+                'success' => false,
+                'message' => 'Task not found (ID: 1)',
+            ]);
     }
 
     public function test_update_changes_task(): void
@@ -120,9 +125,14 @@ final class TaskControllerTest extends TestCase
         $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
     }
 
-    public function test_destroy_returns_not_found_for_missing_task(): void
+    public function test_destroy_get_error_if_task_not_exists(): void
     {
-        $this->deleteJson(route('tasks.destroy', 999))
-            ->assertNotFound();
+        $response = $this->getJson(route('tasks.destroy', 1));
+
+        $response->assertStatus(404)
+            ->assertJson([
+                'success' => false,
+                'message' => 'Task not found (ID: 1)',
+            ]);
     }
 }
